@@ -11,13 +11,6 @@
 			rel="stylesheet"
 			type="text/css"
 		/>
-		<style type="text/css">
-			#visualization {
-				width: 700px;
-				height: 400px;
-				border: 100px solid red;
-			}
-		</style>
 	</head>
 	<body>
 		<div id="TableIsHere"></div>
@@ -61,18 +54,23 @@
 					};
 					DataSetItem.push(newData);
 				}
+				//putting new DataSetItem creating new items
+
 				var items = new vis.DataSet(DataSetItem);
 				var DataSetGroup = [];
 				for (let obj of DataHere.venue) {
 					let newData = {
 						id: obj.venue_id,
-						content: obj.venue_name,
+						content: "<h4>" + obj.venue_name + " " + "<br/>" + "45 %" + "</h4>",
 						title: obj.venue_name,
 					};
 					DataSetGroup.push(newData);
 				}
+				//putting new DataSetGroup creating new items
 				var groups = new vis.DataSet(DataSetGroup);
+				// timeline customization options
 				var options = {
+					width: "100%",
 					timeAxis: { scale: "minute", step: 60 },
 					groupOrder: function (a, b) {
 						return a.value - b.value;
