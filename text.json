@@ -1,0 +1,63 @@
+{
+	"venue": [
+		{
+			"venue_id": "12345",
+			"venue_name": "Agni-1"
+		},
+		{
+			"venue_id": "12346",
+			"venue_name": "Vaayu-2"
+		},
+		{
+			"venue_id": "12347",
+			"venue_name": "Paani-1"
+		}
+	],
+	"time_table_item": [
+		{
+			"venue_id": "12345",
+			"from_time": "2022-06-13 09:00:00",
+			"to_time": "2022-06-13 10:15:00",
+			"date": "2022-06-13",
+			"duration": "1.15",
+			"faculty_name": "Rahul Krish",
+			"topic": "Computer Analytics"
+		},
+		{
+			"venue_id": "12345",
+			"from_time": "2022-06-13 10:30:00",
+			"to_time": "2022-06-13 11:45:00",
+			"date": "2022-06-13",
+			"duration": "1.15",
+			"faculty_name": "Kumaari",
+			"topic": "Graphic Design"
+		},
+		{
+			"venue_id": "12346",
+			"from_time": "2022-06-13 10:00:00",
+			"to_time": "2022-06-13 11:15:00",
+			"date": "2022-06-13",
+			"duration": "1.15",
+			"faculty_name": "Yash",
+			"topic": "System Architecture"
+		},
+		{
+			"venue_id": "12347",
+			"from_time": "2022-06-13 14:00:00",
+			"to_time": "2022-06-13 15:15:00",
+			"date": "2022-06-13",
+			"duration": "1.15",
+			"faculty_name": "Dr. Deepak Shukla",
+			"topic": "Backend with Postgres"
+		},
+		{
+			"venue_id": "12347",
+			"from_time": "2022-06-13 17:00:00",
+			"to_time": "2022-06-13 18:15:00",
+			"date": "2022-06-13",
+			"duration": "1.15",
+			"faculty_name": "Rohit",
+			"topic": "Front-end with React"
+		}
+	]
+}

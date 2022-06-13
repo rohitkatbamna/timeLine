@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Timeline</title>
+		<script
+			type="text/javascript"
+			src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"
+		></script>
+		<link
+			href="https://unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css"
+			rel="stylesheet"
+			type="text/css"
+		/>
+		<style type="text/css">
+			#visualization {
+				width: 700px;
+				height: 400px;
+				border: 100px solid red;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="TableIsHere"></div>
+		<script type="text/javascript">
+			// DOM element where the Timeline will be attached
+			var container = document.getElementById("TableIsHere");
+			var obj;
+			// fetching of json and passing it though a function
+			fetch("./text.json")
+				.then((res) => res.json())
+				.then((data) => (obj = data))
+				.then(() => createTimeline(obj));
+			// the function that will create Timeline
+			function createTimeline(DataHere) {
+				var DataSetItem = [];
+				for (let obj of DataHere.time_table_item) {
+					let newData = {
+						group: obj.venue_id,
+						content: obj.topic,
+						start: obj.from_time,
+						end: obj.to_time,
+						title:
+							"<h6>" +
+							"Prof " +
+							obj.faculty_name +
+							" teaches <br /> " +
+							obj.topic +
+							" from <br /> " +
+							String(new Date(obj.from_time).getHours()).padStart(2, "0") +
+							" : " +
+							String(new Date(obj.from_time).getMinutes()).padStart(2, "0") +
+							" " +
+							"to " +
+							String(new Date(obj.to_time).getHours()).padStart(2, "0") +
+							" : " +
+							String(new Date(obj.to_time).getMinutes()).padStart(2, "0") +
+							" (" +
+							obj.duration +
+							"hrs) " +
+							"</h6>",
+					};
+					DataSetItem.push(newData);
+				}
+				var items = new vis.DataSet(DataSetItem);
+				var DataSetGroup = [];
+				for (let obj of DataHere.venue) {
+					let newData = {
+						id: obj.venue_id,
+						content: obj.venue_name,
+						title: obj.venue_name,
+					};
+					DataSetGroup.push(newData);
+				}
+				var groups = new vis.DataSet(DataSetGroup);
+				var options = {
+					timeAxis: { scale: "minute", step: 60 },
+					groupOrder: function (a, b) {
+						return a.value - b.value;
+					},
+					zoomable: false,
+					moveable: false,
+					tooltip: {
+						followMouse: true,
+						delay: 0,
+					},
+				};
+				var timeline = new vis.Timeline(container, items, groups, options);
+			}
+		</script>
+	</body>
+</html>
