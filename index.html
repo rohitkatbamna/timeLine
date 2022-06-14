@@ -52,9 +52,7 @@
 				.then((data) => (obj = data))
 				.then(() => createTimeline(obj));
 			// Configuration for the Timeline
-			// style:{
-			// 			"font-weight:bold;font-family: sans-serif;color: crimson;font-size:15px",
-			// 	},
+
 			function createTimeline(DataHere) {
 				console.log(DataHere);
 				var DataSetItem = [];
@@ -73,6 +71,7 @@
 					};
 					DataSetItem.push(newData);
 				}
+
 				var items = new vis.DataSet(DataSetItem);
 				var DataSetGroup = [];
 				for (let obj of DataHere.venue) {
