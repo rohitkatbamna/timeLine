@@ -28,81 +28,87 @@
 		/>
 	</head>
 	<body>
-		<p>This example demonstrates custom ordering of groups.</p>
-		<div id="visualization"></div>
+		<div id="TableIsHere"></div>
 
-		<script>
-			var groups = new vis.DataSet([
-				{ id: 0, content: "First", value: 1 },
-				{ id: 1, content: "Third", value: 3 },
-				{ id: 2, content: "Second", value: 2 },
-			]);
+		<script type="text/javascript">
+			// DOM element where the Timeline will be attached
+			var container = document.getElementById("TableIsHere");
+			function tConvert(time) {
+				// Check correct time format and split into components
+				const timeString12hr = new Date(
+					"1970-01-01T" + time + "Z"
+				).toLocaleTimeString("en-US", {
+					timeZone: "UTC",
+					hour12: true,
+					hour: "numeric",
+					minute: "numeric",
+				}); // return adjusted time or original string
+				return timeString12hr;
+			}
+			var obj;
+			// fetching of json and passing it though a function
+			fetch("./text.json")
+				.then((res) => res.json())
+				.then((data) => (obj = data))
+				.then(() => createTimeline(obj));
+			// Configuration for the Timeline
+			// style:{
+			// 			"font-weight:bold;font-family: sans-serif;color: crimson;font-size:15px",
+			// 	},
+			function createTimeline(DataHere) {
+				console.log(DataHere);
+				var DataSetItem = [];
+				for (let obj of DataHere.time_table_item) {
+					let newData = {
+						group: obj.venue_id,
+						content: obj.faculty_name,
+						start: obj.from,
+						end: obj.to,
+						title:
+							"<h6>" +
+							"Prof " +
+							obj.faculty_name +
+							" teaches <br />" +
+							obj.topic,
+					};
+					DataSetItem.push(newData);
+				}
+				var items = new vis.DataSet(DataSetItem);
+				var DataSetGroup = [];
+				for (let obj of DataHere.venue) {
+					let newData = {
+						id: obj.venue_id,
+						content:
+							"<h4>" +
+							tConvert(obj.from_time) +
+							"<br/> to " +
+							"<br/>" +
+							tConvert(obj.to_time) +
+							"</h4>",
+						style: "font-weight:bold;font-family: sans-serif;color: crimson",
+					};
+					DataSetGroup.push(newData);
+				}
+				var groups = new vis.DataSet(DataSetGroup);
 
-			// create a dataset with items
-			// note that months are zero-based in the JavaScript Date object, so month 3 is April
-			var items = new vis.DataSet([
-				{
-					id: 0,
-					group: 1,
-					content: "item 0",
-					start: new Date(2014, 3, 17),
-					end: new Date(2014, 3, 21),
-				},
-				{
-					id: 1,
-					group: 0,
-					content: "item 1",
-					start: new Date(2014, 3, 19),
-					end: new Date(2014, 3, 20),
-				},
-				{
-					id: 2,
-					group: 1,
-					content: "item 2",
-					start: new Date(2014, 3, 16),
-					end: new Date(2014, 3, 24),
-				},
-				{
-					id: 3,
-					group: 1,
-					content: "item 3",
-					start: new Date(2014, 3, 23),
-					end: new Date(2014, 3, 24),
-				},
-				{
-					id: 4,
-					group: 1,
-					content: "item 4",
-					start: new Date(2014, 3, 22),
-					end: new Date(2014, 3, 26),
-				},
-				{
-					id: 5,
-					group: 2,
-					content: "item 5",
-					start: new Date(2014, 3, 24),
-					end: new Date(2014, 3, 27),
-				},
-			]);
+				var options = {
+					width: "100%",
+					timeAxis: { scale: "day", step: 2 },
+					groupOrder: function (a, b) {
+						return a.value - b.value;
+					},
+					zoomable: false,
+					moveable: false,
+					tooltip: {
+						followMouse: true,
+						delay: 0,
+					},
+					align: "center",
+				};
 
-			// create visualization
-			var container = document.getElementById("visualization");
-			var options = {
-				// option groupOrder can be a property name or a sort function
-				// the sort function must compare two groups and return a value
-				//     > 0 when a > b
-				//     < 0 when a < b
-				//       0 when a == b
-				groupOrder: function (a, b) {
-					return a.value - b.value;
-				},
-				editable: true,
-			};
-
-			var timeline = new vis.Timeline(container);
-			timeline.setOptions(options);
-			timeline.setGroups(groups);
-			timeline.setItems(items);
+				// Create a Timeline
+				var timeline = new vis.Timeline(container, items, options, groups);
+			}
 		</script>
 	</body>
 </html>
