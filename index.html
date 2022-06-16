@@ -1,22 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Timeline | groups | Groups ordering</title>
-
-		<style>
-			body,
-			html {
-				font-family: arial, sans-serif;
-				font-size: 11pt;
-			}
-
-			#visualization {
-				box-sizing: border-box;
-				width: 100%;
-				height: 300px;
-			}
-		</style>
-
+		<title>Timeline</title>
 		<script
 			type="text/javascript"
 			src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"
@@ -26,73 +11,73 @@
 			rel="stylesheet"
 			type="text/css"
 		/>
+		<style type="text/css">
+			body,
+			html {
+				font-family: sans-serif;
+			}
+		</style>
 	</head>
 	<body>
 		<div id="TableIsHere"></div>
-
 		<script type="text/javascript">
 			// DOM element where the Timeline will be attached
 			var container = document.getElementById("TableIsHere");
-			function tConvert(time) {
-				// Check correct time format and split into components
-				const timeString12hr = new Date(
-					"1970-01-01T" + time + "Z"
-				).toLocaleTimeString("en-US", {
-					timeZone: "UTC",
-					hour12: true,
-					hour: "numeric",
-					minute: "numeric",
-				}); // return adjusted time or original string
-				return timeString12hr;
-			}
 			var obj;
 			// fetching of json and passing it though a function
 			fetch("./text.json")
 				.then((res) => res.json())
 				.then((data) => (obj = data))
 				.then(() => createTimeline(obj));
-			// Configuration for the Timeline
-
+			// the function that will create Timeline
 			function createTimeline(DataHere) {
-				console.log(DataHere);
 				var DataSetItem = [];
 				for (let obj of DataHere.time_table_item) {
 					let newData = {
 						group: obj.venue_id,
-						content: obj.faculty_name,
-						start: obj.from,
-						end: obj.to,
+						content: obj.topic,
+						start: obj.from_time,
+						end: obj.to_time,
 						title:
 							"<h6>" +
 							"Prof " +
 							obj.faculty_name +
-							" teaches <br />" +
-							obj.topic,
+							" teaches <br /> " +
+							obj.topic +
+							" from <br /> " +
+							String(new Date(obj.from_time).getHours()).padStart(2, "0") +
+							" : " +
+							String(new Date(obj.from_time).getMinutes()).padStart(2, "0") +
+							" " +
+							"to " +
+							String(new Date(obj.to_time).getHours()).padStart(2, "0") +
+							" : " +
+							String(new Date(obj.to_time).getMinutes()).padStart(2, "0") +
+							" (" +
+							obj.duration +
+							"hrs) " +
+							"</h6>",
 					};
 					DataSetItem.push(newData);
 				}
+				//putting new DataSetItem creating new items
 
 				var items = new vis.DataSet(DataSetItem);
 				var DataSetGroup = [];
 				for (let obj of DataHere.venue) {
 					let newData = {
 						id: obj.venue_id,
-						content:
-							"<h4>" +
-							tConvert(obj.from_time) +
-							"<br/> to " +
-							"<br/>" +
-							tConvert(obj.to_time) +
-							"</h4>",
-						style: "font-weight:bold;font-family: sans-serif;color: crimson",
+						content: "<h4>" + obj.venue_name + " " + "<br/>" + "45 %" + "</h4>",
+						title: obj.venue_name,
 					};
 					DataSetGroup.push(newData);
 				}
+				//putting new DataSetGroup creating new items
 				var groups = new vis.DataSet(DataSetGroup);
-
+				// timeline customization options
 				var options = {
 					width: "100%",
-					timeAxis: { scale: "day", step: 2 },
+					timeAxis: { scale: "minute", step: 60 },
 					groupOrder: function (a, b) {
 						return a.value - b.value;
 					},
@@ -102,13 +87,8 @@
 						followMouse: true,
 						delay: 0,
 					},
-					align: "center",
 				};
-
-				// Create a Timeline
-				///
-				///
-				var timeline = new vis.Timeline(container, items, options, groups);
+				var timeline = new vis.Timeline(container, items, groups, options);
 			}
 		</script>
 	</body>
